@@ -1,22 +1,35 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ExternalLink, Trophy, Bell, Target, Award } from 'lucide-react';
+import { 
+  BarChart, 
+  Bar, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  ResponsiveContainer,
+  Cell
+} from 'recharts';
 
 const recruiters = [
-  { name: 'METALMAN', logo: 'M' },
-  { name: 'KRISHNA AUTOMATION', logo: 'KA' },
-  { name: 'ICON POWER SOLUTIONS', logo: 'IPS' },
-  { name: 'YOKOHAMA', logo: 'Y' },
-  { name: 'SMART TECHLINK', logo: 'ST' },
-  { name: 'PlanetSpark', logo: 'PS' },
-  { name: 'TATA MOTORS', logo: 'T' },
-  { name: 'indus TOWERS', logo: 'I' },
-  { name: 'SANSERA ENGINEERING', logo: 'SE' },
-  { name: 'BLUECOLD REFRIGERATION', logo: 'BC' },
-  { name: 'VARROC', logo: 'V' },
-  { name: 'ecospace INFRASTRUCTURES', logo: 'E' },
-  { name: 'Growupp', logo: 'G' },
-  { name: 'HCL', logo: 'H' },
+  { name: 'METALMAN', logo: 'https://www.metalmanauto.com/wp-content/uploads/2021/08/logo.png' },
+  { name: 'KRISHNA AUTOMATION', logo: 'https://krishnaautomation.com/wp-content/uploads/2021/04/Krishna-Automation-Logo.png' },
+  { name: 'YOKOHAMA', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Yokohama_Logo.svg/1280px-Yokohama_Logo.svg.png' },
+  { name: 'PlanetSpark', logo: 'https://www.planetspark.in/images/logos/planetspark-logo.png' },
+  { name: 'TATA MOTORS', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Tata_logo.svg/1200px-Tata_logo.svg.png' },
+  { name: 'indus TOWERS', logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/8/86/Indus_Towers_logo.svg/1200px-Indus_Towers_logo.svg.png' },
+  { name: 'SANSERA', logo: 'https://standard.com.my/wp-content/uploads/2022/07/sansera-logo.png' },
+  { name: 'VARROC', logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/5/52/Varroc_Logo.png/1200px-Varroc_Logo.png' },
+  { name: 'HCL TECH', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/HCL_Technologies_logo.svg/2560px-HCL_Technologies_logo.svg.png' },
+  { name: 'ADANI', logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/0/0c/Adani_Group_logo.svg/1200px-Adani_Group_logo.svg.png' },
+];
+
+const chartData = [
+  { batch: 'Batch 18', companies: 22 },
+  { batch: 'Batch 19', companies: 45 },
+  { batch: 'Batch 20', companies: 53 },
+  { batch: 'Batch 21', companies: 62 },
 ];
 
 export const Home: React.FC = () => {
@@ -77,80 +90,6 @@ export const Home: React.FC = () => {
           </div>
         </div>
 
-        {/* HOD Message */}
-        <div className="flex flex-col md:flex-row-reverse items-center gap-12 lg:gap-20">
-          <div className="w-full md:w-1/3 text-right">
-            <div className="faculty-card group">
-              <img 
-                src="https://i.pinimg.com/736x/6e/60/e4/6e60e4dc56bc5dc246371e317fe13852.jpg" 
-                alt="MR. MUKESH KUMAR ROY" 
-                className="faculty-img scale-x-[-1]"
-                referrerPolicy="no-referrer"
-              />
-              <div className="mt-6">
-                <h3 className="text-2xl font-black uppercase tracking-tighter text-text-dark">MR. MUKESH KUMAR ROY</h3>
-                <p className="text-[10px] font-black uppercase italic tracking-widest text-accent-orange">HOD, CIVIL ENGINEERING</p>
-              </div>
-            </div>
-          </div>
-          <div className="w-full md:w-2/3">
-            <motion.div 
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="message-card bg-white"
-            >
-              <div className="absolute top-8 right-0 w-12 h-1.5 bg-accent-orange rounded-l-full"></div>
-              <h4 className="text-xl font-black uppercase italic tracking-tighter text-text-dark mb-6 text-right pr-6">
-                Message by HOD Sir
-              </h4>
-              <div className="space-y-4 text-text-muted italic text-sm md:text-base leading-relaxed text-right">
-                <p>
-                  Welcome to the Civil Engineering department's career gateway. Our curriculum is designed to push the boundaries of traditional learning, integrating modern engineering practices with core theoretical foundations.
-                </p>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-
-        {/* TPO Message */}
-        <div className="flex flex-col md:flex-row items-center gap-12 lg:gap-20">
-          <div className="w-full md:w-1/3">
-            <div className="faculty-card group">
-              <img 
-                src="https://i.pinimg.com/736x/b3/d3/52/b3d3520eb64af0c0588b831f49fc5eb8.jpg" 
-                alt="DR. SHIVANGI SAXENA" 
-                className="faculty-img"
-                referrerPolicy="no-referrer"
-              />
-              <div className="mt-6">
-                <h3 className="text-2xl font-black uppercase tracking-tighter text-text-dark">DR. SHIVANGI SAXENA</h3>
-                <p className="text-[10px] font-black uppercase italic tracking-widest text-accent-orange">TPO HEAD, CIVIL ENGINEERING</p>
-              </div>
-            </div>
-          </div>
-          <div className="w-full md:w-2/3">
-            <motion.div 
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="message-card"
-            >
-              <h4 className="text-xl font-black uppercase italic tracking-tighter text-text-dark mb-6 pl-6">
-                Message by TPO Head
-              </h4>
-              <div className="space-y-4 text-text-muted italic text-[13px] md:text-sm leading-7">
-                <p>
-                  It gives us immense pleasure to extent to you a cordial invitation to participate in the campus placement process of GEC Vaishali. With a state-of-the-art infrastructure, highly dedicated team of faculty and with well equipped laboratory setup, GEC Vaishali provides a highly conductive environment for teaching and learning process.
-                </p>
-                <p>
-                  We focus on developing managerial social and professional skills in our students with a belief that human asset is the core of todays corporate world. With this note, we look for you to be a part of our endeavour of making our students shine.
-                </p>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-
         {/* Recruiters Section */}
         <section>
           <div className="flex flex-col items-center mb-16">
@@ -161,11 +100,17 @@ export const Home: React.FC = () => {
           
           <div className="recruiter-grid">
             {recruiters.map((r, i) => (
-              <div key={i} className="recruiter-item flex flex-col gap-2">
-                <div className="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center font-black text-lg shadow-inner">
-                  {r.logo}
-                </div>
-                <span className="text-[8px] font-black uppercase tracking-widest text-center">{r.name}</span>
+              <div key={i} className="recruiter-item flex flex-col gap-2 p-6 bg-white overflow-hidden group">
+                <img 
+                  src={r.logo} 
+                  alt={r.name} 
+                  className="h-10 w-full object-contain grayscale group-hover:grayscale-0 transition-all duration-300"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${r.name}&background=random`;
+                  }}
+                  referrerPolicy="no-referrer"
+                />
+                <span className="text-[7px] font-black uppercase tracking-widest text-center mt-2 opacity-40">{r.name}</span>
               </div>
             ))}
           </div>
@@ -179,27 +124,35 @@ export const Home: React.FC = () => {
             <p className="text-sm font-bold text-text-muted italic opacity-60">Regular Visit of Companies for Placement of Students</p>
           </div>
 
-          <div className="card max-w-3xl mx-auto p-12 bg-white rounded-[3rem] shadow-2xl overflow-hidden relative">
-            <div className="flex items-end justify-center gap-6 md:gap-12 h-64 md:h-80 border-b-2 border-slate-100 pb-2 relative">
-              <div className="flex flex-col items-center group flex-1 max-w-[100px]">
-                <div className="text-sm font-black mb-4 group-hover:text-accent-orange transition-colors">22</div>
-                <div className="w-full bg-[#34d399] rounded-t-2xl transition-all duration-700 h-[22%] group-hover:h-[25%] shadow-lg"></div>
-                <div className="text-[10px] font-black mt-4 uppercase tracking-widest opacity-60">Batch 18</div>
-              </div>
-              <div className="flex flex-col items-center group flex-1 max-w-[100px]">
-                <div className="text-sm font-black mb-4 group-hover:text-accent-orange transition-colors">45</div>
-                <div className="w-full bg-[#34d399] rounded-t-2xl transition-all duration-700 h-[45%] group-hover:h-[48%] shadow-lg"></div>
-                <div className="text-[10px] font-black mt-4 uppercase tracking-widest opacity-60">Batch 19</div>
-              </div>
-              <div className="flex flex-col items-center group flex-1 max-w-[100px]">
-                <div className="text-sm font-black mb-4 group-hover:text-accent-orange transition-colors">53</div>
-                <div className="w-full bg-[#34d399] rounded-t-2xl transition-all duration-700 h-[53%] group-hover:h-[56%] shadow-lg"></div>
-                <div className="text-[10px] font-black mt-4 uppercase tracking-widest opacity-60">Batch 20</div>
-              </div>
+          <div className="card max-w-4xl mx-auto p-8 md:p-12 bg-white rounded-[3rem] shadow-2xl overflow-hidden">
+            <div className="h-[400px] w-full mt-4">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={chartData} margin={{ top: 20, right: 30, left: 0, bottom: 20 }}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                  <XAxis 
+                    dataKey="batch" 
+                    axisLine={false} 
+                    tickLine={false} 
+                    tick={{ fill: '#64748b', fontSize: 10, fontWeight: 800 }}
+                    dy={10}
+                  />
+                  <YAxis hide />
+                  <Tooltip 
+                    cursor={{ fill: '#f8fafc' }}
+                    contentStyle={{ borderRadius: '1rem', border: 'none', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)', padding: '12px' }}
+                    itemStyle={{ fontWeight: 800, textTransform: 'uppercase', fontSize: '10px' }}
+                  />
+                  <Bar dataKey="companies" radius={[12, 12, 0, 0]} barSize={60}>
+                    {chartData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={index === chartData.length - 1 ? '#F97316' : '#1E3A8A'} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
             </div>
-            <div className="text-center mt-8">
-              <p className="text-[10px] font-black text-text-muted/40 uppercase tracking-[0.3em] italic">
-                NUMBER OF COMPANIES VISITING FOR PLACEMENTS — YEAR OVER YEAR GROWTH
+            <div className="text-center mt-12 bg-slate-50 py-4 rounded-2xl">
+              <p className="text-[10px] font-black text-text-muted uppercase tracking-[0.3em] italic">
+                NUMBER OF COMPANIES VISITING FOR PLACEMENTS — CONTINUOUS GROWTH
               </p>
             </div>
           </div>
@@ -240,22 +193,6 @@ export const Home: React.FC = () => {
         </section>
 
         {/* Placement List Section */}
-        <section>
-          <div className="flex flex-col items-center mb-16">
-            <div className="w-16 h-1 bg-accent-orange rounded-full mb-6"></div>
-            <h2 className="section-heading tracking-tight mb-4">OUR PLACED LEGENDS</h2>
-            <p className="text-sm font-bold text-text-muted italic opacity-60">Batch 2026 - Hall of Fame</p>
-          </div>
-
-          <div className="max-w-4xl mx-auto rounded-[3rem] overflow-hidden shadow-2xl border-8 border-white group">
-            <img 
-              src="https://i.pinimg.com/736x/b9/09/8b/b9098b4435a6af40f82f7072c8941590.jpg" 
-              alt="2026 Batch Placement List" 
-              className="w-full h-auto group-hover:scale-105 transition-transform duration-700"
-              referrerPolicy="no-referrer"
-            />
-          </div>
-        </section>
       </div>
     </div>
   );

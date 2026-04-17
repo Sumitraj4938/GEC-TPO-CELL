@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { NavLink, Link } from 'react-router-dom';
 import { cn } from '@/src/lib/utils';
 import { useAuth } from '@/src/contexts/AuthContext';
-import { LogOut, User as UserIcon, ChevronDown } from 'lucide-react';
+import { LogOut, User as UserIcon, ChevronDown, Bell } from 'lucide-react';
 
 export const GlobalHeader: React.FC = () => {
   const { user, signOut } = useAuth();
@@ -77,8 +77,13 @@ export const GlobalHeader: React.FC = () => {
         <NavLink to="/courses" className={({ isActive }) => cn("nav-link", isActive && "active")}>
           Courses
         </NavLink>
-        <NavLink to="/notifications" className={({ isActive }) => cn("nav-link", isActive && "active")}>
-          Notices
+        <NavLink to="/notifications" className={({ isActive }) => cn("nav-link flex items-center gap-1.5", isActive && "active")}>
+          {({ isActive }) => (
+            <>
+              <Bell size={16} className={cn(isActive && "text-accent-orange animate-pulse")} />
+              Notices
+            </>
+          )}
         </NavLink>
         
         {user ? (

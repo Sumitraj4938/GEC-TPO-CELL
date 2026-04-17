@@ -40,15 +40,36 @@ export const BranchHome: React.FC = () => {
   }, [branchId]);
 
   const fetchBranchStaticData = async () => {
-    // Mock data for static info (achievements/leadership usually don't change as fast as notices)
+    // Static data for branch
+    if (branchId === 'Civil') {
+      setLeadership([
+        { 
+          id: 'lead-1', 
+          name: 'MR. MUKESH KUMAR ROY', 
+          designation: 'HOD', 
+          branch: 'Civil', 
+          image_url: 'https://i.pinimg.com/736x/6e/60/e4/6e60e4dc56bc5dc246371e317fe13852.jpg',
+          updated_at: new Date().toISOString() 
+        },
+        { 
+          id: 'lead-2', 
+          name: 'DR. SHIVANGI SAXENA', 
+          designation: 'TPO_HEAD', 
+          branch: 'Civil', 
+          image_url: 'https://i.pinimg.com/736x/b3/d3/52/b3d3520eb64af0c0588b831f49fc5eb8.jpg',
+          updated_at: new Date().toISOString() 
+        },
+      ]);
+    } else {
+      setLeadership([
+        { id: '1', name: `Dr. Amit Kumar`, designation: 'HOD', branch: branchId as Branch, updated_at: new Date().toISOString() },
+        { id: '2', name: `Prof. Smita Singh`, designation: 'TPO_HEAD', branch: branchId as Branch, updated_at: new Date().toISOString() },
+      ]);
+    }
+
     setAchievements([
       { id: '1', title: `${branchId} Innovation Award`, description: 'Granted to 5 teams for outstanding project work in the annual research exhibition.', student_name: 'Final Year Students', batch: '2025', date: '2024-03-01' },
       { id: '2', title: `Best Paper Presentation`, description: 'Awarded for the work on sustainable engineering technologies.', student_name: 'Aditya & Team', batch: '2024', date: '2024-01-15' },
-    ]);
-
-    setLeadership([
-      { id: '1', name: `Dr. Amit Kumar`, designation: 'HOD', branch: branchId as Branch, updated_at: new Date().toISOString() },
-      { id: '2', name: `Prof. Smita Singh`, designation: 'TPO_HEAD', branch: branchId as Branch, updated_at: new Date().toISOString() },
     ]);
   };
 
@@ -103,7 +124,7 @@ export const BranchHome: React.FC = () => {
               <div key={prof.id} className="flex flex-col items-center">
                 <div className="faculty-card group">
                   <img 
-                    src={`https://picsum.photos/seed/${branchId}-lead-${idx}/400/500`} 
+                    src={prof.image_url || `https://picsum.photos/seed/${branchId}-lead-${idx}/400/500`} 
                     alt={prof.name} 
                     className="faculty-img"
                     referrerPolicy="no-referrer"
@@ -219,6 +240,25 @@ export const BranchHome: React.FC = () => {
             </div>
           </div>
         </div>
+        {/* Placement List Section for Civil */}
+        {branchId === 'Civil' && (
+          <section>
+            <div className="flex flex-col items-center mb-16">
+              <div className="w-16 h-1 bg-accent-orange rounded-full mb-6"></div>
+              <h2 className="section-heading tracking-tight mb-4">CIVIL PLACEMENT LEGENDS</h2>
+              <p className="text-sm font-bold text-text-muted italic opacity-60">Batch 2026 - Hall of Fame</p>
+            </div>
+
+            <div className="max-w-4xl mx-auto rounded-[3rem] overflow-hidden shadow-2xl border-8 border-white group">
+              <img 
+                src="https://i.pinimg.com/736x/b9/09/8b/b9098b4435a6af40f82f7072c8941590.jpg" 
+                alt="2026 Batch Placement List" 
+                className="w-full h-auto group-hover:scale-105 transition-transform duration-700"
+                referrerPolicy="no-referrer"
+              />
+            </div>
+          </section>
+        )}
       </div>
     </div>
   );
