@@ -144,6 +144,136 @@ export const deleteNotification = async (id: string) => {
 };
 
 // ===============================================================
+// Achievement Operations
+// ===============================================================
+
+const ACHIEVEMENTS_COLLECTION = 'achievements';
+
+export const subscribeToAchievements = (callback: (achievements: any[]) => void) => {
+  const q = query(collection(db, ACHIEVEMENTS_COLLECTION), orderBy('date', 'desc'));
+  return onSnapshot(q, (snapshot) => {
+    callback(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+  }, (error) => handleFirestoreError(error, OperationType.GET, ACHIEVEMENTS_COLLECTION));
+};
+
+export const createAchievement = async (data: any) => {
+  try {
+    await addDoc(collection(db, ACHIEVEMENTS_COLLECTION), { ...data, updated_at: serverTimestamp() });
+  } catch (error) {
+    handleFirestoreError(error, OperationType.CREATE, ACHIEVEMENTS_COLLECTION);
+  }
+};
+
+export const updateAchievement = async (id: string, data: any) => {
+  try {
+    await updateDoc(doc(db, ACHIEVEMENTS_COLLECTION, id), { ...data, updated_at: serverTimestamp() });
+  } catch (error) {
+    handleFirestoreError(error, OperationType.UPDATE, `${ACHIEVEMENTS_COLLECTION}/${id}`);
+  }
+};
+
+export const deleteAchievement = async (id: string) => {
+  try {
+    await deleteDoc(doc(db, ACHIEVEMENTS_COLLECTION, id));
+  } catch (error) {
+    handleFirestoreError(error, OperationType.DELETE, `${ACHIEVEMENTS_COLLECTION}/${id}`);
+  }
+};
+
+// ===============================================================
+// Staff Profile Operations
+// ===============================================================
+
+const PROFILES_COLLECTION = 'profiles';
+
+export const subscribeToProfiles = (callback: (profiles: any[]) => void) => {
+  const q = query(collection(db, PROFILES_COLLECTION), orderBy('name', 'asc'));
+  return onSnapshot(q, (snapshot) => {
+    callback(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+  }, (error) => handleFirestoreError(error, OperationType.GET, PROFILES_COLLECTION));
+};
+
+export const createProfile = async (data: any) => {
+  try {
+    await addDoc(collection(db, PROFILES_COLLECTION), { ...data, updated_at: serverTimestamp() });
+  } catch (error) {
+    handleFirestoreError(error, OperationType.CREATE, PROFILES_COLLECTION);
+  }
+};
+
+export const updateProfile = async (id: string, data: any) => {
+  try {
+    await updateDoc(doc(db, PROFILES_COLLECTION, id), { ...data, updated_at: serverTimestamp() });
+  } catch (error) {
+    handleFirestoreError(error, OperationType.UPDATE, `${PROFILES_COLLECTION}/${id}`);
+  }
+};
+
+export const deleteProfile = async (id: string) => {
+  try {
+    await deleteDoc(doc(db, PROFILES_COLLECTION, id));
+  } catch (error) {
+    handleFirestoreError(error, OperationType.DELETE, `${PROFILES_COLLECTION}/${id}`);
+  }
+};
+
+// ===============================================================
+// Content Section Operations
+// ===============================================================
+
+const CONTENT_COLLECTION = 'content';
+
+export const subscribeToContent = (callback: (content: any[]) => void) => {
+  const q = query(collection(db, CONTENT_COLLECTION), orderBy('section_name', 'asc'));
+  return onSnapshot(q, (snapshot) => {
+    callback(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+  }, (error) => handleFirestoreError(error, OperationType.GET, CONTENT_COLLECTION));
+};
+
+export const createContentSection = async (data: any) => {
+  try {
+    const id = data.id || data.section_name?.toLowerCase().replace(/\s+/g, '-');
+    await setDoc(doc(db, CONTENT_COLLECTION, id), { ...data, updated_at: serverTimestamp() });
+  } catch (error) {
+    handleFirestoreError(error, OperationType.CREATE, CONTENT_COLLECTION);
+  }
+};
+
+export const updateContentSection = async (id: string, data: any) => {
+  try {
+    await updateDoc(doc(db, CONTENT_COLLECTION, id), { ...data, updated_at: serverTimestamp() });
+  } catch (error) {
+    handleFirestoreError(error, OperationType.UPDATE, `${CONTENT_COLLECTION}/${id}`);
+  }
+};
+
+// ===============================================================
+// Settings Operations
+// ===============================================================
+
+const SETTINGS_COLLECTION = 'settings';
+
+export const subscribeToSettings = (callback: (settings: any) => void) => {
+  const settingsRef = doc(db, SETTINGS_COLLECTION, 'global');
+  return onSnapshot(settingsRef, (snapshot) => {
+    if (snapshot.exists()) {
+      callback({ id: snapshot.id, ...snapshot.data() });
+    } else {
+      callback(null);
+    }
+  }, (error) => handleFirestoreError(error, OperationType.GET, `${SETTINGS_COLLECTION}/global`));
+};
+
+export const updateSettings = async (data: any) => {
+  try {
+    const settingsRef = doc(db, SETTINGS_COLLECTION, 'global');
+    await setDoc(settingsRef, { ...data, updated_at: serverTimestamp() }, { merge: true });
+  } catch (error) {
+    handleFirestoreError(error, OperationType.UPDATE, `${SETTINGS_COLLECTION}/global`);
+  }
+};
+
+// ===============================================================
 // User Profile Operations
 // ===============================================================
 

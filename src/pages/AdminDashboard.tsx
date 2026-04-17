@@ -12,7 +12,7 @@ import {
   Calendar
 } from 'lucide-react';
 import { cn } from '@/src/lib/utils';
-import { NotificationManager, ProfileManager, AchievementManager, ContentManager } from './admin';
+import { NotificationManager, ProfileManager, AchievementManager, ContentManager, SettingsManager } from './admin';
 
 export const AdminDashboard: React.FC = () => {
   const location = useLocation();
@@ -23,6 +23,7 @@ export const AdminDashboard: React.FC = () => {
     { label: 'Faculty Profiles', path: '/profiles', icon: Users },
     { label: 'Achievements', path: '/achievements', icon: Trophy },
     { label: 'Content Management', path: '/content', icon: FileText },
+    { label: 'Settings', path: '/settings', icon: Settings },
   ];
 
   return (
@@ -66,6 +67,7 @@ export const AdminDashboard: React.FC = () => {
             <Route path="profiles" element={<ProfileManager />} />
             <Route path="achievements" element={<AchievementManager />} />
             <Route path="content" element={<ContentManager />} />
+            <Route path="settings" element={<SettingsManager />} />
           </Routes>
         </div>
       </div>

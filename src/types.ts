@@ -53,3 +53,13 @@ export interface ContentSection {
   image_url?: string;
   updated_at: string;
 }
+
+export interface SiteSettings {
+  id: 'global';
+  college_name: string;
+  logo_url: string;
+  contact_email: string;
+  contact_phone: string;
+  address: string;
+  updated_at: string;
+}

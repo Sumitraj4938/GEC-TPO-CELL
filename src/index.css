@@ -7,6 +7,8 @@
   
   --color-navy: #0B1D3F;
   --color-primary-blue: #1E3A8A;
+  --color-primary: #1E3A8A;
+  --color-primary-light: #EFF6FF;
   --color-accent-orange: #F97316;
   --color-bg-light: #F8FAFC;
   --color-white: #FFFFFF;
@@ -69,5 +71,17 @@
   
   .recruiter-item {
     @apply bg-bg-light border border-border p-4 rounded-xl flex items-center justify-center hover:shadow-md transition-shadow;
+  }
+
+  .input-field {
+    @apply w-full bg-slate-50 border border-slate-100 rounded-xl p-3 text-sm focus:ring-2 focus:ring-primary/20 outline-none transition-all;
+  }
+
+  .btn-primary {
+    @apply flex items-center gap-2 bg-primary text-white px-6 py-2.5 rounded-xl font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 disabled:pointer-events-none;
+  }
+
+  .btn-secondary {
+    @apply flex items-center gap-2 bg-slate-100 text-slate-600 px-6 py-2.5 rounded-xl font-bold hover:bg-slate-200 transition-all active:scale-95;
   }
 }

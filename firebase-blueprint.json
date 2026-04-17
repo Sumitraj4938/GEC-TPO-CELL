@@ -32,6 +32,49 @@
         "branch": { "type": "string" }
       },
       "required": ["uid", "email", "role"]
+    },
+    "Achievement": {
+      "title": "Achievement",
+      "description": "Student achievements and awards.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "branch": { "type": "string" },
+        "student_name": { "type": "string" },
+        "batch": { "type": "string" },
+        "date": { "type": "string" },
+        "image_url": { "type": "string" }
+      },
+      "required": ["title", "description", "student_name", "batch", "date"]
+    },
+    "StaffProfile": {
+      "title": "Staff Profile",
+      "description": "Profiles for faculty and staff members.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "designation": { "type": "string" },
+        "branch": { "type": "string" },
+        "image_url": { "type": "string" },
+        "bio": { "type": "string" }
+      },
+      "required": ["name", "designation", "branch"]
+    },
+    "ContentSection": {
+      "title": "Content Section",
+      "description": "Dynamic content for site pages.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "section_name": { "type": "string" },
+        "title": { "type": "string" },
+        "content": { "type": "string" },
+        "image_url": { "type": "string" }
+      },
+      "required": ["section_name", "title", "content"]
     }
   },
   "firestore": {
@@ -42,6 +85,18 @@
     "/users/{userId}": {
       "schema": "User",
       "description": "User profiles and permissions."
+    },
+    "/achievements/{achievementId}": {
+      "schema": "Achievement",
+      "description": "Wall of fame entries."
+    },
+    "/profiles/{profileId}": {
+      "schema": "StaffProfile",
+      "description": "Faculty and leadership profiles."
+    },
+    "/content/{contentId}": {
+      "schema": "ContentSection",
+      "description": "Static content sections like About, History, etc."
     }
   }
 }
