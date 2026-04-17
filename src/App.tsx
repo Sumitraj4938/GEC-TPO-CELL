@@ -7,6 +7,7 @@ import { AdminDashboard } from '@/src/pages/AdminDashboard';
 import { Notifications } from '@/src/pages/Notifications';
 import { Profile } from '@/src/pages/Profile';
 import { ContentSectionPage } from '@/src/pages/ContentSectionPage';
+import { AdminLogin } from '@/src/pages/AdminLogin';
 import { AuthProvider } from '@/src/contexts/AuthContext';
 import { ProtectedRoute } from '@/src/components/ProtectedRoute';
 
@@ -22,6 +23,7 @@ export default function App() {
             <Route path="notifications" element={<Notifications />} />
             <Route path="content/:sectionId" element={<ContentSectionPage />} />
             <Route path="profile" element={<Profile />} />
+            <Route path="admin-login" element={<AdminLogin />} />
             <Route 
               path="admin/*" 
               element={

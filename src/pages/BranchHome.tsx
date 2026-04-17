@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Users, Bell, Trophy, Cpu, HardHat, Settings2, Zap, User } from 'lucide-react';
+import { Users, Bell, Trophy, Cpu, HardHat, Settings2, Zap, User, Link as LinkIcon, FileText, Image as ImageIcon } from 'lucide-react';
 import { Branch, Notification, Achievement, Profile } from '@/src/types';
 import { formatDistanceToNow } from 'date-fns';
+import { cn } from '@/src/lib/utils';
 
 const branchConfig: Record<string, { name: string; icon: any; color: string }> = {
   CSE: { name: 'Computer Science & Engineering', icon: Cpu, color: 'bg-navy' },
@@ -28,7 +29,7 @@ export const BranchHome: React.FC = () => {
     // Mock data for branch-specific view
     setNotifications([
       { id: '1', title: `Message from HOD ${branchId}`, message: `Welcome to the ${config.name} department dashboard. We have some exciting updates for the upcoming semester regarding placements and industrial visits.`, branch: branchId as Branch, role: 'All', created_at: new Date().toISOString(), created_by: 'hod', is_scheduled: false },
-      { id: '2', title: `TPO update - ${branchId}`, message: `New recruitment drive scheduled for final year students. Check eligibility in the placement cell.`, branch: branchId as Branch, role: 'All', created_at: new Date(Date.now() - 3600000 * 24).toISOString(), created_by: 'tpo', is_scheduled: false },
+      { id: '2', title: `TPO update - ${branchId}`, message: `New recruitment drive scheduled for final year students. Check eligibility in the placement cell.`, branch: branchId as Branch, role: 'All', created_at: new Date(Date.now() - 3600000 * 24).toISOString(), created_by: 'tpo', is_scheduled: false, attachment_type: 'pdf', attachment_url: 'https://example.com/eligibility.pdf' },
     ]);
 
     setAchievements([
@@ -40,6 +41,24 @@ export const BranchHome: React.FC = () => {
       { id: '1', name: `Dr. Amit Kumar`, designation: 'HOD', branch: branchId as Branch, updated_at: new Date().toISOString() },
       { id: '2', name: `Prof. Smita Singh`, designation: 'TPO_HEAD', branch: branchId as Branch, updated_at: new Date().toISOString() },
     ]);
+  };
+
+  const getAttachmentIcon = (type: string | undefined) => {
+    switch (type) {
+      case 'link': return <LinkIcon size={14} className="text-blue-500" />;
+      case 'pdf': return <FileText size={14} className="text-red-500" />;
+      case 'photo': return <ImageIcon size={14} className="text-green-500" />;
+      default: return null;
+    }
+  };
+
+  const getAttachmentLabel = (type: string | undefined) => {
+    switch (type) {
+      case 'link': return 'External Link';
+      case 'pdf': return 'View PDF';
+      case 'photo': return 'View Image';
+      default: return 'Attachment';
+    }
   };
 
   return (
@@ -140,7 +159,21 @@ export const BranchHome: React.FC = () => {
                       <h4 className="text-base font-black uppercase tracking-tighter text-text-dark group-hover:text-accent-orange transition-colors mb-4 italic">
                         {notif.title}
                       </h4>
-                      <p className="text-text-muted text-[13px] leading-relaxed italic">{notif.message}</p>
+                      <p className="text-text-muted text-[13px] leading-relaxed italic whitespace-pre-wrap">{notif.message}</p>
+                      
+                      {notif.attachment_url && (
+                        <div className="mt-3 flex items-center">
+                          <a 
+                            href={notif.attachment_url} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 text-[10px] font-bold px-3 py-1.5 rounded bg-slate-50 border border-slate-200 hover:border-primary hover:text-primary transition-colors text-text-dark uppercase tracking-widest"
+                          >
+                            {getAttachmentIcon(notif.attachment_type)}
+                            {getAttachmentLabel(notif.attachment_type)}
+                          </a>
+                        </div>
+                      )}
                     </div>
                   ))
                 ) : (

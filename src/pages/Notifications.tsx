@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Bell, Filter, Search, Calendar } from 'lucide-react';
+import { Bell, Filter, Search, Calendar, Link as LinkIcon, FileText, Image as ImageIcon } from 'lucide-react';
 import { Notification } from '@/src/types';
 import { formatDistanceToNow, format } from 'date-fns';
 import { cn } from '@/src/lib/utils';
@@ -8,8 +8,8 @@ import { cn } from '@/src/lib/utils';
 export const Notifications: React.FC = () => {
   const [notifications, setNotifications] = useState<Notification[]>([
     { id: '1', title: 'TCS On-Campus Drive Registration', message: 'Eligible students from CSE, ECE, and EE are requested to fill the form by 5 PM today. Please ensure all documents are ready for upload.', branch: 'CSE', role: 'All', created_at: new Date().toISOString(), created_by: 'admin', is_scheduled: false },
-    { id: '2', title: 'Internal Assessment - Semester 5', message: 'The schedule for internal vivas is now posted on the notice board. Please check your respective lab groups.', branch: 'All', role: 'All', created_at: new Date(Date.now() - 3600000 * 5).toISOString(), created_by: 'admin', is_scheduled: false },
-    { id: '3', title: 'Tarang 2024 - Cultural Fest', message: 'Core committee applications are open for the annual cultural extravaganza. Interested students can apply via the student council portal.', branch: 'All', role: 'All', created_at: new Date(Date.now() - 86400000).toISOString(), created_by: 'admin', is_scheduled: false },
+    { id: '2', title: 'Internal Assessment - Semester 5', message: 'The schedule for internal vivas is now posted on the notice board. Please check your respective lab groups.', branch: 'All', role: 'All', created_at: new Date(Date.now() - 3600000 * 5).toISOString(), created_by: 'admin', is_scheduled: false, attachment_type: 'pdf', attachment_url: 'https://example.com/schedule.pdf' },
+    { id: '3', title: 'Tarang 2024 - Cultural Fest', message: 'Core committee applications are open for the annual cultural extravaganza. Interested students can apply via the student council portal.', branch: 'All', role: 'All', created_at: new Date(Date.now() - 86400000).toISOString(), created_by: 'admin', is_scheduled: false, attachment_type: 'link', attachment_url: 'https://example.com/apply' },
     { id: '4', title: 'Hostel Maintenance Notice', message: 'Routine water tank cleaning will be carried out this weekend. Please store water accordingly.', branch: 'All', role: 'student', created_at: new Date(Date.now() - 86400000 * 2).toISOString(), created_by: 'admin', is_scheduled: false },
   ]);
 
@@ -18,6 +18,24 @@ export const Notifications: React.FC = () => {
   const filteredNotifs = activeFilter === 'All' 
     ? notifications 
     : notifications.filter(n => n.branch === activeFilter);
+
+  const getAttachmentIcon = (type: string | undefined) => {
+    switch (type) {
+      case 'link': return <LinkIcon size={14} className="text-blue-500" />;
+      case 'pdf': return <FileText size={14} className="text-red-500" />;
+      case 'photo': return <ImageIcon size={14} className="text-green-500" />;
+      default: return null;
+    }
+  };
+
+  const getAttachmentLabel = (type: string | undefined) => {
+    switch (type) {
+      case 'link': return 'External Link';
+      case 'pdf': return 'View Document (PDF)';
+      case 'photo': return 'View Image';
+      default: return 'View Attachment';
+    }
+  };
 
   return (
     <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in duration-700">
@@ -52,7 +70,7 @@ export const Notifications: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
               key={notif.id}
-              className="card group hover:border-primary transition-all cursor-pointer relative overflow-hidden"
+              className="card group hover:border-primary transition-all relative overflow-hidden"
             >
               <div className="flex justify-between items-start mb-2">
                 <div className="flex items-center gap-3">
@@ -80,9 +98,25 @@ export const Notifications: React.FC = () => {
                   )}
                 </div>
               </div>
-              <p className="text-text-muted text-sm leading-relaxed mt-4 pl-12 border-l-2 border-primary/10 ml-5">
-                {notif.message}
-              </p>
+              <div className="pl-12 border-l-2 border-primary/10 ml-5">
+                <p className="text-text-muted text-sm leading-relaxed mt-4 whitespace-pre-wrap">
+                  {notif.message}
+                </p>
+                
+                {notif.attachment_url && (
+                  <div className="mt-4 pt-3 flex items-center gap-3">
+                    <a 
+                      href={notif.attachment_url} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-200 hover:border-primary hover:text-primary transition-colors bg-white shadow-sm"
+                    >
+                      {getAttachmentIcon(notif.attachment_type)}
+                      {getAttachmentLabel(notif.attachment_type)}
+                    </a>
+                  </div>
+                )}
+              </div>
             </motion.div>
           ))
         ) : (

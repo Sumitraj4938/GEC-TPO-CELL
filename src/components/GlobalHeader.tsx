@@ -94,7 +94,7 @@ export const GlobalHeader: React.FC = () => {
             </button>
           </div>
         ) : (
-          <Link to="/admin" className="ml-2 text-[10px] font-bold text-white bg-white/10 px-3 py-1.5 rounded border border-white/20 hover:bg-accent-orange hover:border-accent-orange transition-all whitespace-nowrap">
+          <Link to="/admin-login" className="ml-2 text-[10px] font-bold text-white bg-white/10 px-3 py-1.5 rounded border border-white/20 hover:bg-accent-orange hover:border-accent-orange transition-all whitespace-nowrap">
             STAFF LOGIN
           </Link>
         )}

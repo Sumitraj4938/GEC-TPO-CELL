@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Branch, Notification } from '@/src/types';
-import { Send, Trash2, Calendar, Target, UserCheck } from 'lucide-react';
+import { Send, Trash2, Calendar, Edit2, Link, Image as ImageIcon, FileText, Check, X } from 'lucide-react';
 import { format } from 'date-fns';
 
 export const NotificationManager: React.FC = () => {
@@ -14,30 +14,79 @@ export const NotificationManager: React.FC = () => {
     branch: 'All' as Branch | 'All',
     role: 'All' as any,
     scheduled: false,
-    date: ''
+    date: '',
+    attachment_url: '',
+    attachment_type: 'none' as 'none' | 'link' | 'pdf' | 'photo'
   });
 
-  const handleCreate = (e: React.FormEvent) => {
+  const [editingId, setEditingId] = useState<string | null>(null);
+
+  const handleCreateOrUpdate = (e: React.FormEvent) => {
     e.preventDefault();
-    const newNotif: Notification = {
-      id: Math.random().toString(),
-      ...form,
-      created_at: new Date().toISOString(),
-      created_by: 'admin',
-      is_scheduled: form.scheduled
-    };
-    setNotifs([newNotif, ...notifs]);
-    setForm({ title: '', message: '', branch: 'All', role: 'All', scheduled: false, date: '' });
+    if (editingId) {
+      setNotifs(notifs.map(n => n.id === editingId ? {
+        ...n,
+        title: form.title,
+        message: form.message,
+        branch: form.branch,
+        role: form.role,
+        is_scheduled: form.scheduled,
+        scheduled_for: form.date,
+        attachment_url: form.attachment_url,
+        attachment_type: form.attachment_type === 'none' ? undefined : form.attachment_type
+      } : n));
+      setEditingId(null);
+    } else {
+      const newNotif: Notification = {
+        id: Math.random().toString(),
+        title: form.title,
+        message: form.message,
+        branch: form.branch,
+        role: form.role,
+        created_at: new Date().toISOString(),
+        created_by: 'admin',
+        is_scheduled: form.scheduled,
+        scheduled_for: form.date,
+        attachment_url: form.attachment_url,
+        attachment_type: form.attachment_type === 'none' ? undefined : form.attachment_type
+      };
+      setNotifs([newNotif, ...notifs]);
+    }
+    
+    setForm({ title: '', message: '', branch: 'All', role: 'All', scheduled: false, date: '', attachment_url: '', attachment_type: 'none' });
+  };
+
+  const handleEdit = (n: Notification) => {
+    setEditingId(n.id);
+    setForm({
+      title: n.title,
+      message: n.message,
+      branch: n.branch || 'All',
+      role: n.role || 'All',
+      scheduled: n.is_scheduled,
+      date: n.scheduled_for || '',
+      attachment_url: n.attachment_url || '',
+      attachment_type: n.attachment_type || 'none'
+    });
+  };
+
+  const handleDelete = (id: string) => {
+    setNotifs(notifs.filter(n => n.id !== id));
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setForm({ title: '', message: '', branch: 'All', role: 'All', scheduled: false, date: '', attachment_url: '', attachment_type: 'none' });
   };
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
       <section className="card">
         <h3 className="font-bold text-lg mb-6 flex items-center gap-2">
-          <Send className="text-primary" size={20} />
-          Broadcast New Notice
+          {editingId ? <Edit2 className="text-primary" size={20} /> : <Send className="text-primary" size={20} />}
+          {editingId ? 'Edit Broadcast' : 'Broadcast New Notice'}
         </h3>
-        <form onSubmit={handleCreate} className="space-y-4">
+        <form onSubmit={handleCreateOrUpdate} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-1">
               <label className="text-xs font-bold uppercase tracking-widest text-text-muted">Notice Title</label>
@@ -91,6 +140,37 @@ export const NotificationManager: React.FC = () => {
               required
             />
           </div>
+
+          {/* Attachment Section */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <label className="text-xs font-bold uppercase tracking-widest text-text-muted">Attachment Type</label>
+              <select 
+                value={form.attachment_type}
+                onChange={e => setForm({...form, attachment_type: e.target.value as any})}
+                className="w-full bg-slate-50 border border-slate-100 rounded-lg p-3 text-sm focus:ring-2 focus:ring-primary/20 outline-none"
+              >
+                <option value="none">None</option>
+                <option value="link">Direct Link</option>
+                <option value="pdf">PDF URL</option>
+                <option value="photo">Photo / Image URL</option>
+              </select>
+            </div>
+            {form.attachment_type !== 'none' && (
+              <div className="space-y-1">
+                <label className="text-xs font-bold uppercase tracking-widest text-text-muted">Attachment URL</label>
+                <input 
+                  type="url"
+                  value={form.attachment_url}
+                  onChange={e => setForm({...form, attachment_url: e.target.value})}
+                  className="w-full bg-slate-50 border border-slate-100 rounded-lg p-3 text-sm focus:ring-2 focus:ring-primary/20 outline-none"
+                  placeholder={`Enter ${form.attachment_type} URL...`}
+                  required
+                />
+              </div>
+            )}
+          </div>
+
           <div className="flex justify-between items-center pt-2">
             <div className="flex items-center gap-4">
               <label className="flex items-center gap-2 cursor-pointer group">
@@ -111,10 +191,17 @@ export const NotificationManager: React.FC = () => {
                 />
               )}
             </div>
-            <button className="flex items-center gap-2 bg-primary text-white px-6 py-2.5 rounded-xl font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all">
-              <Send size={18} />
-              Broadcast Now
-            </button>
+            <div className="flex items-center gap-2">
+              {editingId && (
+                <button type="button" onClick={cancelEdit} className="bg-slate-100 text-slate-600 px-4 py-2.5 rounded-xl font-bold hover:bg-slate-200 transition-colors">
+                  Cancel
+                </button>
+              )}
+              <button type="submit" className="flex items-center gap-2 bg-primary text-white px-6 py-2.5 rounded-xl font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all">
+                {editingId ? <Check size={18} /> : <Send size={18} />}
+                {editingId ? 'Save Changes' : 'Broadcast Now'}
+              </button>
+            </div>
           </div>
         </form>
       </section>
@@ -130,8 +217,8 @@ export const NotificationManager: React.FC = () => {
               <tr className="border-b border-border text-[10px] font-bold text-text-muted uppercase tracking-widest">
                 <th className="pb-4 pl-4">Notice info</th>
                 <th className="pb-4">Targeting</th>
-                <th className="pb-4">Status</th>
-                <th className="pb-4 pr-4 text-right">Actions</th>
+                <th className="pb-4">Attachment</th>
+                <th className="pb-4 pr-4 border-l border-border pl-4">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -148,15 +235,30 @@ export const NotificationManager: React.FC = () => {
                     </div>
                   </td>
                   <td className="py-4">
-                    <span className="text-[10px] font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded uppercase tracking-wider">Sent</span>
+                    {n.attachment_type === 'link' && <Link size={16} className="text-blue-500" />}
+                    {n.attachment_type === 'pdf' && <FileText size={16} className="text-red-500" />}
+                    {n.attachment_type === 'photo' && <ImageIcon size={16} className="text-green-500" />}
+                    {!n.attachment_type && <span className="text-xs text-slate-400">None</span>}
                   </td>
-                  <td className="py-4 pr-4 transition-all group-hover:opacity-100 opacity-0 text-right">
-                    <button className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors">
-                      <Trash2 size={16} />
-                    </button>
+                  <td className="py-2 pr-4 border-l border-slate-100 pl-4">
+                    <div className="flex items-center gap-2">
+                      <button onClick={() => handleEdit(n)} className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                        <Edit2 size={16} />
+                      </button>
+                      <button onClick={() => handleDelete(n.id)} className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
+              {notifs.length === 0 && (
+                <tr>
+                  <td colSpan={4} className="py-8 text-center text-sm text-slate-500">
+                    No notifications sent yet.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
@@ -164,3 +266,4 @@ export const NotificationManager: React.FC = () => {
     </div>
   );
 };
+

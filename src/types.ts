@@ -20,6 +20,8 @@ export interface Notification {
   scheduled_for?: string;
   created_at: string;
   created_by: string;
+  attachment_url?: string;
+  attachment_type?: 'pdf' | 'photo' | 'link';
 }
 
 export interface Profile {
