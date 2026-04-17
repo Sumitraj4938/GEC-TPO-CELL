@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { Layout } from '@/src/components/Layout';
 import { Home } from '@/src/pages/Home';
 import { BranchHome } from '@/src/pages/BranchHome';
+import { BatchHome } from '@/src/pages/BatchHome';
 import { Courses } from '@/src/pages/Courses';
 import { AdminDashboard } from '@/src/pages/AdminDashboard';
 import { Notifications } from '@/src/pages/Notifications';
@@ -19,6 +20,7 @@ export default function App() {
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
             <Route path="branch/:branchId" element={<BranchHome />} />
+            <Route path="batch/:batchId" element={<BatchHome />} />
             <Route path="courses" element={<Courses />} />
             <Route path="notifications" element={<Notifications />} />
             <Route path="achievements" element={<ContentSectionPage />} />
