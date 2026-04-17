@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ExternalLink, Trophy, Bell, Target, Award } from 'lucide-react';
+import { cn } from '@/src/lib/utils';
 import { 
   BarChart, 
   Bar, 
@@ -13,28 +14,31 @@ import {
 } from 'recharts';
 
 const recruiters = [
-  { name: 'METALMAN', logo: 'https://www.metalmanauto.com/wp-content/uploads/2021/08/logo.png' },
-  { name: 'KRISHNA AUTOMATION', logo: 'https://krishnaautomation.com/wp-content/uploads/2021/04/Krishna-Automation-Logo.png' },
-  { name: 'YOKOHAMA', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Yokohama_Logo.svg/1280px-Yokohama_Logo.svg.png' },
-  { name: 'PlanetSpark', logo: 'https://www.planetspark.in/images/logos/planetspark-logo.png' },
-  { name: 'TATA MOTORS', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Tata_logo.svg/1200px-Tata_logo.svg.png' },
-  { name: 'indus TOWERS', logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/8/86/Indus_Towers_logo.svg/1200px-Indus_Towers_logo.svg.png' },
-  { name: 'SANSERA', logo: 'https://standard.com.my/wp-content/uploads/2022/07/sansera-logo.png' },
-  { name: 'VARROC', logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/5/52/Varroc_Logo.png/1200px-Varroc_Logo.png' },
-  { name: 'HCL TECH', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/HCL_Technologies_logo.svg/2560px-HCL_Technologies_logo.svg.png' },
-  { name: 'ADANI', logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/0/0c/Adani_Group_logo.svg/1200px-Adani_Group_logo.svg.png' },
+  { name: 'METALMAN', logo: 'M', color: 'bg-black' },
+  { name: 'KRISHNA AUTOMATION', logo: 'KA', color: 'bg-red-600' },
+  { name: 'ICON POWER SOLUTIONS', logo: 'IPS', color: 'bg-blue-600' },
+  { name: 'YOKOHAMA', logo: 'Y', color: 'bg-red-500' },
+  { name: 'SMART TECHLINK', logo: 'ST', color: 'bg-cyan-500' },
+  { name: 'PlanetSpark', logo: 'PS', color: 'bg-orange-500' },
+  { name: 'TATA MOTORS', logo: 'T', color: 'bg-blue-800' },
+  { name: 'indus TOWERS', logo: 'indus', color: 'bg-indigo-600' },
+  { name: 'SANSERA', logo: 'SANSERA', color: 'bg-orange-600' },
+  { name: 'BLUECOLD', logo: 'BLUECOLD', color: 'bg-blue-400' },
+  { name: 'VARROC', logo: 'V', color: 'bg-yellow-500' },
+  { name: 'ecospace', logo: 'ecospace', color: 'bg-green-600' },
+  { name: 'Growupp', logo: 'Growupp', color: 'bg-orange-400' },
+  { name: 'HCL', logo: 'HCL', color: 'bg-blue-700' },
 ];
 
 const chartData = [
-  { batch: 'Batch 18', companies: 22 },
-  { batch: 'Batch 19', companies: 45 },
-  { batch: 'Batch 20', companies: 53 },
-  { batch: 'Batch 21', companies: 62 },
+  { batch: 'BATCH 18', companies: 22 },
+  { batch: 'BATCH 19', companies: 45 },
+  { batch: 'BATCH 20', companies: 53 },
 ];
 
 export const Home: React.FC = () => {
   return (
-    <div className="space-y-0">
+    <div className="space-y-0 bg-[#F9FAFB]">
       {/* Hero Section */}
       <section className="hero-card">
         <div className="absolute top-0 left-0 w-full h-full opacity-20 bg-[radial-gradient(circle_at_50%_50%,rgba(30,58,138,1)_0%,transparent_70%)]"></div>
@@ -98,19 +102,13 @@ export const Home: React.FC = () => {
             <p className="text-sm font-bold text-text-muted italic opacity-60">Companies that have trusted GEC Vaishali talent</p>
           </div>
           
-          <div className="recruiter-grid">
+          <div className="recruiter-grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
             {recruiters.map((r, i) => (
-              <div key={i} className="recruiter-item flex flex-col gap-2 p-6 bg-white overflow-hidden group">
-                <img 
-                  src={r.logo} 
-                  alt={r.name} 
-                  className="h-10 w-full object-contain grayscale group-hover:grayscale-0 transition-all duration-300"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${r.name}&background=random`;
-                  }}
-                  referrerPolicy="no-referrer"
-                />
-                <span className="text-[7px] font-black uppercase tracking-widest text-center mt-2 opacity-40">{r.name}</span>
+              <div key={i} className="bg-white border border-slate-100 p-6 rounded-2xl flex flex-col items-center justify-center gap-4 shadow-sm hover:shadow-md transition-shadow group">
+                <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center text-white font-black text-xs shadow-lg overflow-hidden shrink-0", r.color)}>
+                  {r.logo.length > 2 ? <span className="text-[8px] uppercase">{r.logo}</span> : r.logo}
+                </div>
+                <span className="text-[9px] font-black uppercase tracking-widest text-slate-400 group-hover:text-slate-600 transition-colors text-center">{r.name}</span>
               </div>
             ))}
           </div>
@@ -119,40 +117,53 @@ export const Home: React.FC = () => {
         {/* Stats Section */}
         <section>
           <div className="flex flex-col items-center mb-16">
-            <div className="w-16 h-1 bg-accent-orange rounded-full mb-6"></div>
-            <h2 className="section-heading tracking-tight mb-4">STRONG INTERACTION WITH INDUSTRY</h2>
-            <p className="text-sm font-bold text-text-muted italic opacity-60">Regular Visit of Companies for Placement of Students</p>
+            <div className="w-20 h-1.5 bg-[#FACC15] rounded-full mb-6"></div>
+            <h2 className="text-3xl md:text-5xl font-black text-center uppercase italic tracking-tighter text-slate-900 mb-4">STRONG INTERACTION WITH INDUSTRY</h2>
+            <p className="text-[10px] md:text-sm font-bold text-slate-400 text-center uppercase tracking-widest italic opacity-60">Regular Visit of Companies for Placement of Students</p>
           </div>
 
-          <div className="card max-w-4xl mx-auto p-8 md:p-12 bg-white rounded-[3rem] shadow-2xl overflow-hidden">
-            <div className="h-[400px] w-full mt-4">
+          <div className="max-w-4xl mx-auto p-12 bg-white rounded-[3rem] shadow-2xl overflow-hidden border border-slate-50 relative">
+            <div className="h-[450px] w-full mt-4">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={chartData} margin={{ top: 20, right: 30, left: 0, bottom: 20 }}>
+                <BarChart data={chartData} margin={{ top: 40, right: 30, left: 0, bottom: 20 }}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                   <XAxis 
                     dataKey="batch" 
                     axisLine={false} 
                     tickLine={false} 
-                    tick={{ fill: '#64748b', fontSize: 10, fontWeight: 800 }}
-                    dy={10}
+                    tick={{ fill: '#64748b', fontSize: 10, fontWeight: 900, textTransform: 'uppercase' }}
+                    dy={15}
                   />
-                  <YAxis hide />
+                  <YAxis 
+                    axisLine={false} 
+                    tickLine={false} 
+                    tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 700 }}
+                  />
                   <Tooltip 
-                    cursor={{ fill: '#f8fafc' }}
-                    contentStyle={{ borderRadius: '1rem', border: 'none', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)', padding: '12px' }}
-                    itemStyle={{ fontWeight: 800, textTransform: 'uppercase', fontSize: '10px' }}
+                    cursor={{ fill: 'transparent' }}
+                    contentStyle={{ borderRadius: '1.5rem', border: 'none', boxShadow: '0 25px 50px -12px rgb(0 0 0 / 0.15)', padding: '16px' }}
+                    itemStyle={{ fontWeight: 900, textTransform: 'uppercase', fontSize: '12px' }}
                   />
-                  <Bar dataKey="companies" radius={[12, 12, 0, 0]} barSize={60}>
+                  <Bar 
+                    dataKey="companies" 
+                    radius={[15, 15, 0, 0]} 
+                    barSize={90}
+                    label={{ position: 'top', fill: '#1e293b', fontSize: 14, fontWeight: 900, dy: -10 }}
+                  >
                     {chartData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={index === chartData.length - 1 ? '#F97316' : '#1E3A8A'} />
+                      <Cell key={`cell-${index}`} fill="linear-gradient(to top, #4ade80, #2dd4bf)" fillOpacity={0.8} />
                     ))}
+                    {/* Fallback fill if gradient Cell doesn't work well in standard Recharts Bar without custom shape */}
+                    <Cell fill="#4ade80" />
+                    <Cell fill="#4ade80" />
+                    <Cell fill="#4ade80" />
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
             </div>
-            <div className="text-center mt-12 bg-slate-50 py-4 rounded-2xl">
-              <p className="text-[10px] font-black text-text-muted uppercase tracking-[0.3em] italic">
-                NUMBER OF COMPANIES VISITING FOR PLACEMENTS — CONTINUOUS GROWTH
+            <div className="text-center mt-12">
+              <p className="text-[10px] md:text-xs font-black text-slate-400 uppercase tracking-[0.2em] italic">
+                NUMBER OF COMPANIES VISITING FOR PLACEMENTS — YEAR OVER YEAR GROWTH
               </p>
             </div>
           </div>
@@ -194,6 +205,23 @@ export const Home: React.FC = () => {
 
         {/* Placement List Section */}
       </div>
+
+      <footer className="mt-32">
+        <div className="w-full h-1 bg-[#FACC15]"></div>
+        <div className="bg-navy py-12 px-6 text-center space-y-4">
+          <h3 className="text-xl md:text-2xl font-black uppercase italic tracking-tighter text-white">
+            TRAINING & PLACEMENT PORTAL
+          </h3>
+          <p className="text-white/60 text-[10px] md:text-xs font-bold uppercase tracking-widest italic">
+            GEC Vaishali, Bihar - 844101
+          </p>
+          <div className="pt-8">
+            <p className="text-white/30 text-[9px] font-black uppercase tracking-[0.3em] font-mono">
+              © 2026 TPO PORTAL • GECV
+            </p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
