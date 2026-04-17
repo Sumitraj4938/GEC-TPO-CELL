@@ -44,7 +44,7 @@ export const Home: React.FC = () => {
           <div className="w-full md:w-1/3">
             <div className="faculty-card group">
               <img 
-                src="https://picsum.photos/seed/principal/400/500" 
+                src="https://i.pinimg.com/736x/30/93/d1/3093d190d475bc5df3881edca6b53a9c.jpg" 
                 alt="Dr. Anant Kumar" 
                 className="faculty-img"
                 referrerPolicy="no-referrer"
@@ -82,7 +82,7 @@ export const Home: React.FC = () => {
           <div className="w-full md:w-1/3 text-right">
             <div className="faculty-card group">
               <img 
-                src="https://picsum.photos/seed/hod/400/500" 
+                src="https://i.pinimg.com/736x/6e/60/e4/6e60e4dc56bc5dc246371e317fe13852.jpg" 
                 alt="MR. MUKESH KUMAR ROY" 
                 className="faculty-img scale-x-[-1]"
                 referrerPolicy="no-referrer"
@@ -118,7 +118,7 @@ export const Home: React.FC = () => {
           <div className="w-full md:w-1/3">
             <div className="faculty-card group">
               <img 
-                src="https://picsum.photos/seed/tpo/400/500" 
+                src="https://i.pinimg.com/736x/b3/d3/52/b3d3520eb64af0c0588b831f49fc5eb8.jpg" 
                 alt="DR. SHIVANGI SAXENA" 
                 className="faculty-img"
                 referrerPolicy="no-referrer"
@@ -202,6 +202,58 @@ export const Home: React.FC = () => {
                 NUMBER OF COMPANIES VISITING FOR PLACEMENTS — YEAR OVER YEAR GROWTH
               </p>
             </div>
+          </div>
+        </section>
+
+        {/* Gallery Section */}
+        <section>
+          <div className="flex flex-col items-center mb-16">
+            <div className="w-16 h-1 bg-accent-orange rounded-full mb-6"></div>
+            <h2 className="section-heading tracking-tight mb-4">MOCK INTERVIEW SEASON</h2>
+            <p className="text-sm font-bold text-text-muted italic opacity-60">Preparing students for real-world recruitment challenges</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <motion.div 
+              whileHover={{ scale: 1.02 }}
+              className="rounded-3xl overflow-hidden shadow-2xl border-4 border-white"
+            >
+              <img 
+                src="https://i.pinimg.com/736x/60/1d/bf/601dbfb9abb98aa44e1a31eda6a6812b.jpg" 
+                alt="Mock Interview 1" 
+                className="w-full h-80 object-cover"
+                referrerPolicy="no-referrer"
+              />
+            </motion.div>
+            <motion.div 
+              whileHover={{ scale: 1.02 }}
+              className="rounded-3xl overflow-hidden shadow-2xl border-4 border-white"
+            >
+              <img 
+                src="https://i.pinimg.com/736x/d4/2c/70/d42c70984e73aa4c7203ba7123b2dcf4.jpg" 
+                alt="Mock Interview 2" 
+                className="w-full h-80 object-cover"
+                referrerPolicy="no-referrer"
+              />
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Placement List Section */}
+        <section>
+          <div className="flex flex-col items-center mb-16">
+            <div className="w-16 h-1 bg-accent-orange rounded-full mb-6"></div>
+            <h2 className="section-heading tracking-tight mb-4">OUR PLACED LEGENDS</h2>
+            <p className="text-sm font-bold text-text-muted italic opacity-60">Batch 2026 - Hall of Fame</p>
+          </div>
+
+          <div className="max-w-4xl mx-auto rounded-[3rem] overflow-hidden shadow-2xl border-8 border-white group">
+            <img 
+              src="https://i.pinimg.com/736x/b9/09/8b/b9098b4435a6af40f82f7072c8941590.jpg" 
+              alt="2026 Batch Placement List" 
+              className="w-full h-auto group-hover:scale-105 transition-transform duration-700"
+              referrerPolicy="no-referrer"
+            />
           </div>
         </section>
       </div>
