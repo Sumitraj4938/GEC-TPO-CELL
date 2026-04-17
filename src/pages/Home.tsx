@@ -14,20 +14,20 @@ import {
 } from 'recharts';
 
 const recruiters = [
-  { name: 'METALMAN', logo: 'M', color: 'bg-black' },
-  { name: 'KRISHNA AUTOMATION', logo: 'KA', color: 'bg-red-600' },
-  { name: 'ICON POWER SOLUTIONS', logo: 'IPS', color: 'bg-blue-600' },
-  { name: 'YOKOHAMA', logo: 'Y', color: 'bg-red-500' },
-  { name: 'SMART TECHLINK', logo: 'ST', color: 'bg-cyan-500' },
-  { name: 'PlanetSpark', logo: 'PS', color: 'bg-orange-500' },
-  { name: 'TATA MOTORS', logo: 'T', color: 'bg-blue-800' },
-  { name: 'indus TOWERS', logo: 'indus', color: 'bg-indigo-600' },
-  { name: 'SANSERA', logo: 'SANSERA', color: 'bg-orange-600' },
-  { name: 'BLUECOLD', logo: 'BLUECOLD', color: 'bg-blue-400' },
-  { name: 'VARROC', logo: 'V', color: 'bg-yellow-500' },
-  { name: 'ecospace', logo: 'ecospace', color: 'bg-green-600' },
-  { name: 'Growupp', logo: 'Growupp', color: 'bg-orange-400' },
-  { name: 'HCL', logo: 'HCL', color: 'bg-blue-700' },
+  { name: 'METALMAN', domain: 'metalmanauto.com', color: 'bg-slate-50' },
+  { name: 'KRISHNA AUTOMATION', domain: 'krishnaautomation.com', color: 'bg-slate-50' },
+  { name: 'ICON POWER SOLUTIONS', domain: 'iconpower.in', color: 'bg-slate-50' },
+  { name: 'YOKOHAMA', domain: 'yokohama-india.com', color: 'bg-slate-50' },
+  { name: 'SMART TECHLINK', domain: 'smarttechlink.com', color: 'bg-slate-50' },
+  { name: 'PlanetSpark', domain: 'planetspark.in', color: 'bg-slate-50' },
+  { name: 'TATA MOTORS', domain: 'tatamotors.com', color: 'bg-slate-50' },
+  { name: 'indus TOWERS', domain: 'industowers.com', color: 'bg-slate-50' },
+  { name: 'SANSERA', domain: 'sansera.in', color: 'bg-slate-50' },
+  { name: 'BLUECOLD', domain: 'bluecold.co.in', color: 'bg-slate-50' },
+  { name: 'VARROC', domain: 'varroc.com', color: 'bg-slate-50' },
+  { name: 'ecospace', domain: 'ecospace.in', color: 'bg-slate-50' },
+  { name: 'Growupp', domain: 'growupp.in', color: 'bg-slate-50' },
+  { name: 'HCL', domain: 'hcltech.com', color: 'bg-slate-50' },
 ];
 
 const chartData = [
@@ -39,6 +39,14 @@ const chartData = [
 export const Home: React.FC = () => {
   return (
     <div className="space-y-0 bg-[#F9FAFB]">
+      <svg width="0" height="0" className="absolute">
+        <defs>
+          <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#2dd4bf" />
+            <stop offset="100%" stopColor="#4ade80" />
+          </linearGradient>
+        </defs>
+      </svg>
       {/* Hero Section */}
       <section className="hero-card">
         <div className="absolute top-0 left-0 w-full h-full opacity-20 bg-[radial-gradient(circle_at_50%_50%,rgba(30,58,138,1)_0%,transparent_70%)]"></div>
@@ -104,9 +112,17 @@ export const Home: React.FC = () => {
           
           <div className="recruiter-grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
             {recruiters.map((r, i) => (
-              <div key={i} className="bg-white border border-slate-100 p-6 rounded-2xl flex flex-col items-center justify-center gap-4 shadow-sm hover:shadow-md transition-shadow group">
-                <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center text-white font-black text-xs shadow-lg overflow-hidden shrink-0", r.color)}>
-                  {r.logo.length > 2 ? <span className="text-[8px] uppercase">{r.logo}</span> : r.logo}
+              <div key={i} className="bg-white border border-slate-100 p-6 rounded-2xl flex flex-col items-center justify-center gap-4 shadow-sm hover:shadow-md transition-shadow group h-32">
+                <div className={cn("w-16 h-16 rounded-xl flex items-center justify-center bg-white p-2 border border-slate-50 shadow-sm group-hover:border-primary transition-colors", r.color)}>
+                  <img 
+                    src={`https://logo.clearbit.com/${r.domain}`} 
+                    alt={r.name} 
+                    className="w-full h-full object-contain filter grayscale group-hover:grayscale-0 transition-all"
+                    referrerPolicy="no-referrer"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${r.name}&background=random&color=fff`;
+                    }}
+                  />
                 </div>
                 <span className="text-[9px] font-black uppercase tracking-widest text-slate-400 group-hover:text-slate-600 transition-colors text-center">{r.name}</span>
               </div>
@@ -146,17 +162,14 @@ export const Home: React.FC = () => {
                   />
                   <Bar 
                     dataKey="companies" 
+                    fill="url(#barGradient)"
                     radius={[15, 15, 0, 0]} 
                     barSize={90}
                     label={{ position: 'top', fill: '#1e293b', fontSize: 14, fontWeight: 900, dy: -10 }}
                   >
                     {chartData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill="linear-gradient(to top, #4ade80, #2dd4bf)" fillOpacity={0.8} />
+                      <Cell key={`cell-${index}`} />
                     ))}
-                    {/* Fallback fill if gradient Cell doesn't work well in standard Recharts Bar without custom shape */}
-                    <Cell fill="#4ade80" />
-                    <Cell fill="#4ade80" />
-                    <Cell fill="#4ade80" />
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
@@ -166,40 +179,6 @@ export const Home: React.FC = () => {
                 NUMBER OF COMPANIES VISITING FOR PLACEMENTS — YEAR OVER YEAR GROWTH
               </p>
             </div>
-          </div>
-        </section>
-
-        {/* Gallery Section */}
-        <section>
-          <div className="flex flex-col items-center mb-16">
-            <div className="w-16 h-1 bg-accent-orange rounded-full mb-6"></div>
-            <h2 className="section-heading tracking-tight mb-4">MOCK INTERVIEW SEASON</h2>
-            <p className="text-sm font-bold text-text-muted italic opacity-60">Preparing students for real-world recruitment challenges</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <motion.div 
-              whileHover={{ scale: 1.02 }}
-              className="rounded-3xl overflow-hidden shadow-2xl border-4 border-white"
-            >
-              <img 
-                src="https://i.pinimg.com/736x/60/1d/bf/601dbfb9abb98aa44e1a31eda6a6812b.jpg" 
-                alt="Mock Interview 1" 
-                className="w-full h-80 object-cover"
-                referrerPolicy="no-referrer"
-              />
-            </motion.div>
-            <motion.div 
-              whileHover={{ scale: 1.02 }}
-              className="rounded-3xl overflow-hidden shadow-2xl border-4 border-white"
-            >
-              <img 
-                src="https://i.pinimg.com/736x/d4/2c/70/d42c70984e73aa4c7203ba7123b2dcf4.jpg" 
-                alt="Mock Interview 2" 
-                className="w-full h-80 object-cover"
-                referrerPolicy="no-referrer"
-              />
-            </motion.div>
           </div>
         </section>
 

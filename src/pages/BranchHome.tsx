@@ -242,22 +242,58 @@ export const BranchHome: React.FC = () => {
         </div>
         {/* Placement List Section for Civil */}
         {branchId === 'Civil' && (
-          <section>
-            <div className="flex flex-col items-center mb-16">
-              <div className="w-16 h-1 bg-accent-orange rounded-full mb-6"></div>
-              <h2 className="section-heading tracking-tight mb-4">CIVIL PLACEMENT LEGENDS</h2>
-              <p className="text-sm font-bold text-text-muted italic opacity-60">Batch 2026 - Hall of Fame</p>
-            </div>
+          <>
+            <section>
+              <div className="flex flex-col items-center mb-16">
+                <div className="w-16 h-1 bg-accent-orange rounded-full mb-6"></div>
+                <h2 className="section-heading tracking-tight mb-4">CIVIL PLACEMENT LEGENDS</h2>
+                <p className="text-sm font-bold text-text-muted italic opacity-60">Batch 2026 - Hall of Fame</p>
+              </div>
 
-            <div className="max-w-4xl mx-auto rounded-[3rem] overflow-hidden shadow-2xl border-8 border-white group">
-              <img 
-                src="https://i.pinimg.com/736x/b9/09/8b/b9098b4435a6af40f82f7072c8941590.jpg" 
-                alt="2026 Batch Placement List" 
-                className="w-full h-auto group-hover:scale-105 transition-transform duration-700"
-                referrerPolicy="no-referrer"
-              />
-            </div>
-          </section>
+              <div className="max-w-4xl mx-auto rounded-[3rem] overflow-hidden shadow-2xl border-8 border-white group">
+                <img 
+                  src="https://i.pinimg.com/736x/b9/09/8b/b9098b4435a6af40f82f7072c8941590.jpg" 
+                  alt="2026 Batch Placement List" 
+                  className="w-full h-auto group-hover:scale-105 transition-transform duration-700"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+            </section>
+
+            {/* Mock Interview Season Section */}
+            <section>
+              <div className="flex flex-col items-center mb-16">
+                <div className="w-16 h-1 bg-accent-orange rounded-full mb-6"></div>
+                <h2 className="section-heading tracking-tight mb-4 text-center">MOCK INTERVIEW SEASON</h2>
+                <p className="text-sm font-bold text-text-muted italic opacity-60 text-center">Preparing students for real-world recruitment challenges</p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <motion.div 
+                  whileHover={{ scale: 1.02 }}
+                  className="rounded-3xl overflow-hidden shadow-2xl border-4 border-white"
+                >
+                  <img 
+                    src="https://i.pinimg.com/736x/60/1d/bf/601dbfb9abb98aa44e1a31eda6a6812b.jpg" 
+                    alt="Mock Interview 1" 
+                    className="w-full h-80 object-cover"
+                    referrerPolicy="no-referrer"
+                  />
+                </motion.div>
+                <motion.div 
+                  whileHover={{ scale: 1.02 }}
+                  className="rounded-3xl overflow-hidden shadow-2xl border-4 border-white"
+                >
+                  <img 
+                    src="https://i.pinimg.com/736x/d4/2c/70/d42c70984e73aa4c7203ba7123b2dcf4.jpg" 
+                    alt="Mock Interview 2" 
+                    className="w-full h-80 object-cover"
+                    referrerPolicy="no-referrer"
+                  />
+                </motion.div>
+              </div>
+            </section>
+          </>
         )}
       </div>
     </div>

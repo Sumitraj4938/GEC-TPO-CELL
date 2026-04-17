@@ -23,6 +23,7 @@ export const NotificationManager: React.FC = () => {
     title: '',
     message: '',
     branch: (branchParam as Branch) || 'All' as Branch | 'All',
+    batch: 'All',
     role: 'All' as any,
     scheduled: false,
     date: '',
@@ -54,6 +55,7 @@ export const NotificationManager: React.FC = () => {
       title: form.title,
       message: form.message,
       branch: form.branch as Branch,
+      batch: form.batch === 'All' ? undefined : form.batch,
       role: form.role,
       created_at: new Date().toISOString(),
       created_by: user.id,
@@ -70,7 +72,7 @@ export const NotificationManager: React.FC = () => {
       await createNotification(payload);
     }
     
-    setForm({ title: '', message: '', branch: 'All', role: 'All', scheduled: false, date: '', attachment_url: '', attachment_type: 'none' });
+    setForm({ title: '', message: '', branch: 'All', batch: 'All', role: 'All', scheduled: false, date: '', attachment_url: '', attachment_type: 'none' });
   };
 
   const handleEdit = (n: Notification) => {
@@ -79,6 +81,7 @@ export const NotificationManager: React.FC = () => {
       title: n.title,
       message: n.message,
       branch: n.branch || 'All',
+      batch: n.batch || 'All',
       role: n.role || 'All',
       scheduled: !!n.is_scheduled,
       date: n.scheduled_for || '',
@@ -95,7 +98,7 @@ export const NotificationManager: React.FC = () => {
 
   const cancelEdit = () => {
     setEditingId(null);
-    setForm({ title: '', message: '', branch: 'All', role: 'All', scheduled: false, date: '', attachment_url: '', attachment_type: 'none' });
+    setForm({ title: '', message: '', branch: 'All', batch: 'All', role: 'All', scheduled: false, date: '', attachment_url: '', attachment_type: 'none' });
   };
 
   return (
@@ -131,6 +134,20 @@ export const NotificationManager: React.FC = () => {
                   <option value="Mechanical">Mechanical</option>
                   <option value="EE">EE</option>
                   <option value="ECE">ECE</option>
+                </select>
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs font-bold uppercase tracking-widest text-text-muted">Target Batch</label>
+                <select 
+                  value={form.batch}
+                  onChange={e => setForm({...form, batch: e.target.value})}
+                  className="w-full bg-slate-50 border border-slate-100 rounded-lg p-3 text-sm focus:ring-2 focus:ring-primary/20 outline-none"
+                >
+                  <option value="All">All Batches</option>
+                  <option value="2024">Batch 2024</option>
+                  <option value="2025">Batch 2025</option>
+                  <option value="2026">Batch 2026</option>
+                  <option value="2027">Batch 2027</option>
                 </select>
               </div>
               <div className="space-y-1">
@@ -248,8 +265,9 @@ export const NotificationManager: React.FC = () => {
                     <div className="text-xs text-text-muted max-w-sm truncate">{n.message}</div>
                   </td>
                   <td className="py-4">
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2">
                       <span className="tag">{n.branch}</span>
+                      {n.batch && <span className="bg-amber-100 text-amber-700 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">{n.batch}</span>}
                       <span className="bg-slate-100 text-slate-600 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">{n.role}</span>
                     </div>
                   </td>

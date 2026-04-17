@@ -10,6 +10,7 @@ export const Notifications: React.FC = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState<string>('All');
+  const [activeBatch, setActiveBatch] = useState<string>('All');
 
   useEffect(() => {
     const unsubscribe = subscribeToNotifications((notifs) => {
@@ -19,9 +20,11 @@ export const Notifications: React.FC = () => {
     return () => unsubscribe();
   }, []);
 
-  const filteredNotifs = activeFilter === 'All' 
-    ? notifications 
-    : notifications.filter(n => n.branch === activeFilter);
+  const filteredNotifs = notifications.filter(n => {
+    const branchMatch = activeFilter === 'All' || n.branch === activeFilter;
+    const batchMatch = activeBatch === 'All' || n.batch === activeBatch;
+    return branchMatch && batchMatch;
+  });
 
   const getAttachmentIcon = (type: string | undefined) => {
     switch (type) {
@@ -43,26 +46,48 @@ export const Notifications: React.FC = () => {
 
   return (
     <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in duration-700">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
-        <div>
-          <h1 className="text-3xl font-extrabold tracking-tight">Notice Board</h1>
-          <p className="text-text-muted mt-1">Official announcements and daily updates from GEC Vaishali.</p>
+      <div className="flex flex-col gap-6">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+          <div>
+            <h1 className="text-3xl font-extrabold tracking-tight">Notice Board</h1>
+            <p className="text-text-muted mt-1">Official announcements and daily updates from GEC Vaishali.</p>
+          </div>
+          <div className="flex flex-wrap gap-2 bg-white p-1 rounded-xl shadow-sm border border-border">
+            {['All', 'CSE', 'Civil', 'Mechanical', 'EE', 'ECE'].map((filter) => (
+              <button
+                key={filter}
+                onClick={() => setActiveFilter(filter)}
+                className={cn(
+                  "px-4 py-1.5 rounded-lg text-xs font-bold transition-all",
+                  activeFilter === filter 
+                    ? "bg-primary text-white" 
+                    : "text-text-muted hover:bg-primary-light hover:text-primary"
+                )}
+              >
+                {filter}
+              </button>
+            ))}
+          </div>
         </div>
-        <div className="flex gap-2 bg-white p-1 rounded-xl shadow-sm border border-border">
-          {['All', 'CSE', 'Civil', 'Mechanical', 'EE', 'ECE'].map((filter) => (
-            <button
-              key={filter}
-              onClick={() => setActiveFilter(filter)}
-              className={cn(
-                "px-4 py-1.5 rounded-lg text-xs font-bold transition-all",
-                activeFilter === filter 
-                  ? "bg-primary text-white" 
-                  : "text-text-muted hover:bg-primary-light hover:text-primary"
-              )}
-            >
-              {filter}
-            </button>
-          ))}
+
+        <div className="flex items-center gap-4 bg-slate-50/50 p-3 rounded-2xl border border-slate-100">
+          <span className="text-[10px] font-black uppercase tracking-widest text-text-muted mx-2">Filter by Batch:</span>
+          <div className="flex flex-wrap gap-2">
+            {['All', '2024', '2025', '2026', '2027'].map((batch) => (
+              <button
+                key={batch}
+                onClick={() => setActiveBatch(batch)}
+                className={cn(
+                  "px-3 py-1 rounded-full text-[10px] font-bold transition-all border",
+                  activeBatch === batch 
+                    ? "bg-navy text-white border-navy" 
+                    : "bg-white text-slate-500 border-slate-200 hover:border-navy hover:text-navy"
+                )}
+              >
+                {batch === 'All' ? 'All Batches' : `Batch ${batch}`}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -93,8 +118,13 @@ export const Notifications: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                   <span className="tag">{notif.branch}</span>
+                  {notif.batch && (
+                    <span className="bg-amber-100 text-amber-700 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">
+                      Batch {notif.batch}
+                    </span>
+                  )}
                   {notif.role !== 'All' && (
                     <span className="bg-slate-100 text-slate-600 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">
                       {notif.role}s

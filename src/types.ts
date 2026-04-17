@@ -15,6 +15,7 @@ export interface Notification {
   title: string;
   message: string;
   branch?: Branch;
+  batch?: string; // e.g. '2026'
   role?: UserRole | 'All';
   is_scheduled: boolean;
   scheduled_for?: string;

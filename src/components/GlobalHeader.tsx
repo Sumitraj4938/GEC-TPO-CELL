@@ -40,23 +40,83 @@ export const GlobalHeader: React.FC = () => {
       </Link>
 
       <nav className="flex items-center gap-6 md:gap-8 lg:gap-10">
-        <NavLink to="/" className={({ isActive }) => cn("text-white/90 hover:text-[#FACC15] transition-colors duration-200 text-xs font-black uppercase tracking-widest", isActive && "text-[#FACC15] border-b-2 border-[#FACC15] pb-1")}>
-          Home
+        <NavLink to="/" className={({ isActive }) => cn("text-white/90 hover:text-[#FACC15] transition-colors duration-200 text-xs font-black uppercase tracking-widest relative group/nav", isActive && "text-[#FACC15]")}>
+          {({ isActive }) => (
+            <>
+              Home
+              <span className={cn("absolute -bottom-1 left-0 w-0 h-0.5 bg-[#FACC15] transition-all group-hover/nav:w-full", isActive && "w-full")}></span>
+            </>
+          )}
         </NavLink>
-        <NavLink to="/notifications" className={({ isActive }) => cn("text-white/90 hover:text-[#FACC15] transition-colors duration-200 text-xs font-black uppercase tracking-widest", isActive && "text-[#FACC15] border-b-2 border-[#FACC15] pb-1")}>
-          Notification
-        </NavLink>
-        <NavLink to="/achievements" className={({ isActive }) => cn("text-white/90 hover:text-[#FACC15] transition-colors duration-200 text-xs font-black uppercase tracking-widest", isActive && "text-[#FACC15] border-b-2 border-[#FACC15] pb-1")}>
-          Achievement
+
+        <div className="relative group/menu">
+          <button 
+            className="flex items-center gap-1 text-white/90 hover:text-[#FACC15] transition-colors duration-200 text-xs font-black uppercase tracking-widest outline-none"
+            onClick={() => setIsBranchMenuOpen(!isBranchMenuOpen)}
+            onMouseEnter={() => setIsBranchMenuOpen(true)}
+          >
+            Branches
+            <ChevronDown size={14} className={cn("transition-transform duration-200", isBranchMenuOpen && "rotate-180")} />
+          </button>
+          
+          <div 
+            className={cn(
+              "absolute top-full left-0 mt-4 w-56 bg-white rounded-2xl shadow-2xl border border-slate-100 py-3 transition-all duration-300 origin-top overflow-hidden",
+              isBranchMenuOpen ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-95 -translate-y-2 pointer-events-none"
+            )}
+            onMouseLeave={() => setIsBranchMenuOpen(false)}
+          >
+            {branches.map((branch) => (
+              <NavLink
+                key={branch.id}
+                to={`/branch/${branch.id}`}
+                className={({ isActive }) => cn(
+                  "block px-6 py-3 text-[10px] font-black uppercase tracking-widest transition-all",
+                  isActive 
+                    ? "text-accent-orange bg-slate-50" 
+                    : "text-slate-600 hover:text-accent-orange hover:bg-slate-50"
+                )}
+                onClick={() => setIsBranchMenuOpen(false)}
+              >
+                {branch.name}
+              </NavLink>
+            ))}
+          </div>
+        </div>
+
+        <NavLink to="/notifications" className={({ isActive }) => cn("text-white/90 hover:text-[#FACC15] transition-colors duration-200 text-xs font-black uppercase tracking-widest flex items-center gap-1.5 group/nav relative", isActive && "text-[#FACC15]")}>
+          {({ isActive }) => (
+            <>
+              <Bell size={14} className={cn("transition-transform", isActive && "animate-bounce")} />
+              Notification
+              <span className={cn("absolute -bottom-1 left-0 w-0 h-0.5 bg-[#FACC15] transition-all group-hover/nav:w-full", isActive && "w-full")}></span>
+            </>
+          )}
         </NavLink>
         
+        <NavLink to="/achievements" className={({ isActive }) => cn("text-white/90 hover:text-[#FACC15] transition-colors duration-200 text-xs font-black uppercase tracking-widest relative group/nav", isActive && "text-[#FACC15]")}>
+          {({ isActive }) => (
+            <>
+              Achievement
+              <span className={cn("absolute -bottom-1 left-0 w-0 h-0.5 bg-[#FACC15] transition-all group-hover/nav:w-full", isActive && "w-full")}></span>
+            </>
+          )}
+        </NavLink>
+        
+      <div className="flex items-center gap-4">
+        <Link to="/notifications" className="text-white hover:text-accent-orange transition-colors relative group/bell md:mr-2">
+          <Bell size={18} />
+          <span className="absolute -top-1 -right-1 w-2 h-2 bg-accent-orange rounded-full border-2 border-navy scale-0 group-hover/bell:scale-100 transition-transform"></span>
+        </Link>
+
         {user && (
-          <div className="flex items-center gap-4 pl-4 border-l border-white/10 ml-2">
+          <div className="flex items-center gap-4 pl-4 border-l border-white/10">
             <Link to="/admin" className="text-white hover:text-[#FACC15] transition-colors">
               <UserIcon size={18} />
             </Link>
           </div>
         )}
+      </div>
       </nav>
     </header>
   );
