@@ -21,7 +21,7 @@ export const GlobalHeader: React.FC = () => {
       <Link to="/" className="flex items-center gap-4 group shrink-0">
         <div className="w-12 h-12 md:w-14 md:h-14 bg-white rounded-full flex items-center justify-center p-1 overflow-hidden shadow-lg border-2 border-accent-orange/20 shrink-0">
           <img 
-            src="https://picsum.photos/seed/gecv-logo/100/100" 
+            src="https://i.pinimg.com/736x/21/2b/24/212b24b01e309259025008518973d092.jpg" 
             alt="GEC Vaishali Logo" 
             className="w-full h-full object-contain"
             referrerPolicy="no-referrer"

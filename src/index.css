@@ -60,7 +60,7 @@
   }
   
   .faculty-img {
-    @apply w-full aspect-[3/4] object-cover rounded-[2rem] shadow-xl border-4 border-white grayscale hover:grayscale-0 transition-all duration-500;
+    @apply w-full aspect-[3/4] object-cover rounded-[2rem] shadow-xl border-4 border-white transition-all duration-500;
   }
   
   .recruiter-grid {
@@ -68,6 +68,6 @@
   }
   
   .recruiter-item {
-    @apply bg-bg-light border border-border p-4 rounded-xl flex items-center justify-center hover:shadow-md transition-shadow grayscale hover:grayscale-0;
+    @apply bg-bg-light border border-border p-4 rounded-xl flex items-center justify-center hover:shadow-md transition-shadow;
   }
 }

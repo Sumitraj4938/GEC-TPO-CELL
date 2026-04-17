@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Users, Bell, Trophy, Cpu, HardHat, Settings2, Zap, User, Link as LinkIcon, FileText, Image as ImageIcon } from 'lucide-react';
+import { Users, Bell, Trophy, Cpu, HardHat, Settings2, Zap, User, Link as LinkIcon, FileText, Image as ImageIcon, PlusCircle, Settings } from 'lucide-react';
 import { Branch, Notification, Achievement, Profile } from '@/src/types';
 import { formatDistanceToNow } from 'date-fns';
 import { cn } from '@/src/lib/utils';
+import { subscribeToNotifications } from '@/src/lib/firestore-utils';
+import { useAuth } from '@/src/contexts/AuthContext';
 
 const branchConfig: Record<string, { name: string; icon: any; color: string }> = {
   CSE: { name: 'Computer Science & Engineering', icon: Cpu, color: 'bg-navy' },
@@ -20,18 +22,25 @@ export const BranchHome: React.FC = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [leadership, setLeadership] = useState<Profile[]>([]);
+  const { user } = useAuth();
+
+  const isStaff = user && ['super_admin', 'tpo_admin', 'hod_admin', 'admin', 'staff'].includes(user.role);
 
   useEffect(() => {
-    fetchBranchData();
+    // Real-time subscription to notifications
+    const unsubscribe = subscribeToNotifications((notifs) => {
+      // Filter for this branch OR 'All'
+      const filtered = notifs.filter(n => n.branch === branchId || n.branch === 'All');
+      setNotifications(filtered);
+    });
+
+    fetchBranchStaticData();
+
+    return () => unsubscribe();
   }, [branchId]);
 
-  const fetchBranchData = async () => {
-    // Mock data for branch-specific view
-    setNotifications([
-      { id: '1', title: `Message from HOD ${branchId}`, message: `Welcome to the ${config.name} department dashboard. We have some exciting updates for the upcoming semester regarding placements and industrial visits.`, branch: branchId as Branch, role: 'All', created_at: new Date().toISOString(), created_by: 'hod', is_scheduled: false },
-      { id: '2', title: `TPO update - ${branchId}`, message: `New recruitment drive scheduled for final year students. Check eligibility in the placement cell.`, branch: branchId as Branch, role: 'All', created_at: new Date(Date.now() - 3600000 * 24).toISOString(), created_by: 'tpo', is_scheduled: false, attachment_type: 'pdf', attachment_url: 'https://example.com/eligibility.pdf' },
-    ]);
-
+  const fetchBranchStaticData = async () => {
+    // Mock data for static info (achievements/leadership usually don't change as fast as notices)
     setAchievements([
       { id: '1', title: `${branchId} Innovation Award`, description: 'Granted to 5 teams for outstanding project work in the annual research exhibition.', student_name: 'Final Year Students', batch: '2025', date: '2024-03-01' },
       { id: '2', title: `Best Paper Presentation`, description: 'Awarded for the work on sustainable engineering technologies.', student_name: 'Aditya & Team', batch: '2024', date: '2024-01-15' },
@@ -146,9 +155,19 @@ export const BranchHome: React.FC = () => {
           {/* Branch Notices */}
           <div className="space-y-16">
             <section>
-              <h2 className="text-2xl font-black uppercase italic tracking-tighter text-text-dark mb-10 border-l-6 border-navy pl-4">
-                DEPARTMENT NOTICES
-              </h2>
+              <div className="flex justify-between items-center mb-10 border-l-6 border-navy pl-4">
+                <h2 className="text-2xl font-black uppercase italic tracking-tighter text-text-dark">
+                  DEPARTMENT NOTICES
+                </h2>
+                {isStaff && (
+                  <Link 
+                    to={`/admin/notifications?branch=${branchId}`}
+                    className="flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary border border-primary/20 rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-primary hover:text-white transition-all shadow-sm"
+                  >
+                    <PlusCircle size={14} /> ADD NOTICE
+                  </Link>
+                )}
+              </div>
               <div className="space-y-10">
                 {notifications.length > 0 ? (
                   notifications.map((notif) => (
@@ -206,4 +225,3 @@ export const BranchHome: React.FC = () => {
 };
 
 // Add missing cn import
-import { cn } from '@/src/lib/utils';

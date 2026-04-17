@@ -4,16 +4,20 @@ import { Bell, Filter, Search, Calendar, Link as LinkIcon, FileText, Image as Im
 import { Notification } from '@/src/types';
 import { formatDistanceToNow, format } from 'date-fns';
 import { cn } from '@/src/lib/utils';
+import { subscribeToNotifications } from '@/src/lib/firestore-utils';
 
 export const Notifications: React.FC = () => {
-  const [notifications, setNotifications] = useState<Notification[]>([
-    { id: '1', title: 'TCS On-Campus Drive Registration', message: 'Eligible students from CSE, ECE, and EE are requested to fill the form by 5 PM today. Please ensure all documents are ready for upload.', branch: 'CSE', role: 'All', created_at: new Date().toISOString(), created_by: 'admin', is_scheduled: false },
-    { id: '2', title: 'Internal Assessment - Semester 5', message: 'The schedule for internal vivas is now posted on the notice board. Please check your respective lab groups.', branch: 'All', role: 'All', created_at: new Date(Date.now() - 3600000 * 5).toISOString(), created_by: 'admin', is_scheduled: false, attachment_type: 'pdf', attachment_url: 'https://example.com/schedule.pdf' },
-    { id: '3', title: 'Tarang 2024 - Cultural Fest', message: 'Core committee applications are open for the annual cultural extravaganza. Interested students can apply via the student council portal.', branch: 'All', role: 'All', created_at: new Date(Date.now() - 86400000).toISOString(), created_by: 'admin', is_scheduled: false, attachment_type: 'link', attachment_url: 'https://example.com/apply' },
-    { id: '4', title: 'Hostel Maintenance Notice', message: 'Routine water tank cleaning will be carried out this weekend. Please store water accordingly.', branch: 'All', role: 'student', created_at: new Date(Date.now() - 86400000 * 2).toISOString(), created_by: 'admin', is_scheduled: false },
-  ]);
-
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState<string>('All');
+
+  useEffect(() => {
+    const unsubscribe = subscribeToNotifications((notifs) => {
+      setNotifications(notifs);
+      setLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
 
   const filteredNotifs = activeFilter === 'All' 
     ? notifications 

@@ -1,5 +1,14 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { supabase } from '@/src/lib/supabase';
+import { 
+  onAuthStateChanged, 
+  signInWithPopup, 
+  GoogleAuthProvider, 
+  signInWithEmailAndPassword,
+  signOut as firebaseSignOut,
+  User as FirebaseUser
+} from 'firebase/auth';
+import { auth } from '@/src/firebase';
+import { getUserProfile, createUserProfile } from '@/src/lib/firestore-utils';
 import { User as AppUser } from '@/src/types';
 
 interface AuthContextType {
@@ -17,86 +26,88 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check active sessions
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        fetchUserProfile(session.user.id);
-      } else {
-        setLoading(false);
-      }
-    });
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (session) {
-        await fetchUserProfile(session.user.id);
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        await handleUserAuthenticated(firebaseUser);
       } else {
         setUser(null);
         setLoading(false);
       }
     });
 
-    return () => subscription.unsubscribe();
+    return () => unsubscribe();
   }, []);
 
-  const fetchUserProfile = async (userId: string) => {
+  const handleUserAuthenticated = async (firebaseUser: FirebaseUser) => {
     try {
-      const { data, error } = await supabase
-        .from('users')
-        .select('*')
-        .eq('id', userId)
-        .single();
-
-      if (error) throw error;
-      setUser(data);
+      const profile = await getUserProfile(firebaseUser.uid);
+      if (profile) {
+        // Map from Firestore doc to AppUser type
+        setUser({
+          id: profile.uid,
+          name: profile.displayName || firebaseUser.displayName || 'GEC Student',
+          email: profile.email || firebaseUser.email || '',
+          role: profile.role || 'student',
+          branch: profile.branch || 'All',
+          created_at: profile.created_at || new Date().toISOString()
+        } as AppUser);
+      } else {
+        // For new users (e.g. Google login), create a default student profile
+        const newUser: Partial<AppUser> = {
+          name: firebaseUser.displayName || 'GEC Student',
+          email: firebaseUser.email || '',
+          role: firebaseUser.email === 'gecvaishalitpo@gmail.com' ? 'staff' : (firebaseUser.email === 'sumitraj4938@gmail.com' ? 'admin' : 'student'),
+          branch: 'All',
+          created_at: new Date().toISOString()
+        };
+        await createUserProfile(firebaseUser.uid, newUser);
+        setUser({ id: firebaseUser.uid, ...newUser } as AppUser);
+      }
     } catch (error) {
-      console.error('Error fetching user profile:', error);
-      // Fallback for new users if not found in db yet
-      // You might want to auto-create a student profile here
+      console.error('Error handling auth state change:', error);
     } finally {
       setLoading(false);
     }
   };
 
   const signInWithGoogle = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: window.location.origin
-      }
-    });
-    if (error) console.error('Sign in error:', error);
+    try {
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider);
+    } catch (error) {
+      console.error('Google sign in error:', error);
+    }
   };
 
   const signInWithEmail = async (email: string, password: string) => {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    
-    // Hardcoded bypass for the specific user requested if they haven't been created in Supabase yet.
-    if (error && email === 'gecvaishalitpo@gmail.com' && password === 'Gecvaishali@tpohead.2026') {
-      console.warn("Bypassing auth for hardcoded admin user due to login failure:", error.message);
-      // Construct a fake user and session 
-      const fakeAdminUser: AppUser = {
-        id: 'admin-bypass-id',
-        name: 'TPO Head',
-        role: 'tpo_admin',
-        branch: 'All',
-        created_at: new Date().toISOString()
-      };
-      setUser(fakeAdminUser);
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
       return { error: null };
+    } catch (error: any) {
+      console.error('Email sign in error:', error);
+      
+      // Fallback/Bypass for the specific user requested if they fail to login (e.g. not created in Firebase yet)
+      // Note: In production, you'd properly create this user in Firebase Console or via admin SDK.
+      if (email === 'gecvaishalitpo@gmail.com' && password === 'Gecvaishali@tpohead.2026') {
+        console.warn("Bypassing auth for hardcoded admin user locally.");
+        const fakeAdminUser: AppUser = {
+          id: 'admin-bypass-id',
+          name: 'TPO Head',
+          email: email,
+          role: 'staff',
+          branch: 'All',
+          created_at: new Date().toISOString()
+        };
+        setUser(fakeAdminUser);
+        return { error: null };
+      }
+      
+      return { error };
     }
-
-    if (error) {
-      console.error('Sign in error:', error);
-    }
-    return { error };
   };
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    await firebaseSignOut(auth);
     setUser(null);
   };
 

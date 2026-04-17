@@ -1,17 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Branch, Notification } from '@/src/types';
 import { Send, Trash2, Calendar, Edit2, Link, Image as ImageIcon, FileText, Check, X } from 'lucide-react';
 import { format } from 'date-fns';
+import { 
+  subscribeToNotifications, 
+  createNotification, 
+  updateNotification, 
+  deleteNotification 
+} from '@/src/lib/firestore-utils';
+import { useAuth } from '@/src/contexts/AuthContext';
 
 export const NotificationManager: React.FC = () => {
-  const [notifs, setNotifs] = useState<Notification[]>([
-    { id: '1', title: 'TCS On-Campus Drive Registration', message: 'Eligible students are requested to fill the form.', branch: 'CSE', role: 'All', created_at: new Date().toISOString(), created_by: 'admin', is_scheduled: false }
-  ]);
+  const { user } = useAuth();
+  const [searchParams] = useSearchParams();
+  const branchParam = searchParams.get('branch');
+
+  const [notifs, setNotifs] = useState<Notification[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const [form, setForm] = useState({
     title: '',
     message: '',
-    branch: 'All' as Branch | 'All',
+    branch: (branchParam as Branch) || 'All' as Branch | 'All',
     role: 'All' as any,
     scheduled: false,
     date: '',
@@ -19,38 +30,44 @@ export const NotificationManager: React.FC = () => {
     attachment_type: 'none' as 'none' | 'link' | 'pdf' | 'photo'
   });
 
+  useEffect(() => {
+    if (branchParam) {
+      setForm(prev => ({ ...prev, branch: branchParam as Branch }));
+    }
+  }, [branchParam]);
+
   const [editingId, setEditingId] = useState<string | null>(null);
 
-  const handleCreateOrUpdate = (e: React.FormEvent) => {
+  useEffect(() => {
+    const unsubscribe = subscribeToNotifications((data) => {
+      setNotifs(data);
+      setLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const handleCreateOrUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user) return;
+
+    const payload: Omit<Notification, 'id'> = {
+      title: form.title,
+      message: form.message,
+      branch: form.branch as Branch,
+      role: form.role,
+      created_at: new Date().toISOString(),
+      created_by: user.id,
+      is_scheduled: form.scheduled,
+      scheduled_for: form.scheduled ? form.date : undefined,
+      attachment_url: form.attachment_url || undefined,
+      attachment_type: form.attachment_type === 'none' ? undefined : form.attachment_type as any
+    };
+
     if (editingId) {
-      setNotifs(notifs.map(n => n.id === editingId ? {
-        ...n,
-        title: form.title,
-        message: form.message,
-        branch: form.branch,
-        role: form.role,
-        is_scheduled: form.scheduled,
-        scheduled_for: form.date,
-        attachment_url: form.attachment_url,
-        attachment_type: form.attachment_type === 'none' ? undefined : form.attachment_type
-      } : n));
+      await updateNotification(editingId, payload);
       setEditingId(null);
     } else {
-      const newNotif: Notification = {
-        id: Math.random().toString(),
-        title: form.title,
-        message: form.message,
-        branch: form.branch,
-        role: form.role,
-        created_at: new Date().toISOString(),
-        created_by: 'admin',
-        is_scheduled: form.scheduled,
-        scheduled_for: form.date,
-        attachment_url: form.attachment_url,
-        attachment_type: form.attachment_type === 'none' ? undefined : form.attachment_type
-      };
-      setNotifs([newNotif, ...notifs]);
+      await createNotification(payload);
     }
     
     setForm({ title: '', message: '', branch: 'All', role: 'All', scheduled: false, date: '', attachment_url: '', attachment_type: 'none' });
@@ -63,15 +80,17 @@ export const NotificationManager: React.FC = () => {
       message: n.message,
       branch: n.branch || 'All',
       role: n.role || 'All',
-      scheduled: n.is_scheduled,
+      scheduled: !!n.is_scheduled,
       date: n.scheduled_for || '',
       attachment_url: n.attachment_url || '',
       attachment_type: n.attachment_type || 'none'
     });
   };
 
-  const handleDelete = (id: string) => {
-    setNotifs(notifs.filter(n => n.id !== id));
+  const handleDelete = async (id: string) => {
+    if (window.confirm('Are you sure you want to delete this notification?')) {
+      await deleteNotification(id);
+    }
   };
 
   const cancelEdit = () => {

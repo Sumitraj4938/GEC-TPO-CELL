@@ -1,0 +1,47 @@
+{
+  "entities": {
+    "Notification": {
+      "title": "Notification",
+      "description": "Represents a broadcasted announcement or notice.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "message": { "type": "string" },
+        "branch": { "type": "string", "enum": ["All", "CSE", "Civil", "Mechanical", "EE", "ECE"] },
+        "role": { "type": "string", "enum": ["All", "Faculty", "Student"] },
+        "created_at": { "type": "string", "format": "date-time" },
+        "created_by": { "type": "string" },
+        "is_scheduled": { "type": "boolean" },
+        "scheduled_for": { "type": "string", "format": "date-time" },
+        "attachment_url": { "type": "string", "format": "uri" },
+        "attachment_type": { "type": "string", "enum": ["pdf", "photo", "link"] }
+      },
+      "required": ["title", "message", "branch", "role", "created_at"]
+    },
+    "User": {
+      "title": "User",
+      "description": "User profile information.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string", "format": "uri" },
+        "role": { "type": "string", "enum": ["admin", "staff", "student"] },
+        "branch": { "type": "string" }
+      },
+      "required": ["uid", "email", "role"]
+    }
+  },
+  "firestore": {
+    "/notifications/{notificationId}": {
+      "schema": "Notification",
+      "description": "Global and branch-specific notifications."
+    },
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles and permissions."
+    }
+  }
+}

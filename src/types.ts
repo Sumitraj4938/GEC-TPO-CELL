@@ -1,5 +1,5 @@
-export type UserRole = 'super_admin' | 'tpo_admin' | 'hod_admin' | 'student';
-export type Branch = 'CSE' | 'Civil' | 'Mechanical' | 'EE' | 'ECE';
+export type UserRole = 'super_admin' | 'tpo_admin' | 'hod_admin' | 'admin' | 'staff' | 'student';
+export type Branch = 'CSE' | 'Civil' | 'Mechanical' | 'EE' | 'ECE' | 'All';
 
 export interface User {
   id: string;
@@ -14,7 +14,7 @@ export interface Notification {
   id: string;
   title: string;
   message: string;
-  branch?: Branch | 'All';
+  branch?: Branch;
   role?: UserRole | 'All';
   is_scheduled: boolean;
   scheduled_for?: string;
